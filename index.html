@@ -1,0 +1,893 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deck99 — Software for what comes next.</title>
+<meta name="description" content="Custom-built platforms for energy innovators, blockchain ecosystems and real-world assets.">
+<meta name="theme-color" content="#1d1d20">
+<script>document.documentElement.classList.add('js')</script>
+<link rel="icon" href="assets/favicon.png">
+<link rel="stylesheet" href="assets/fonts/geist.css">
+<style>
+:root{
+  --bg:#1d1d20; --panel:#24262b; --ink:#e8edf4; --muted:#b5b9c2; --blue:#5aaacf; --gold:#e3c27e; --line:#3b3e45;
+  --deep:#18181b; --tile:#2b3945;
+  --e:cubic-bezier(.16,1,.3,1);
+  --pad:7%;
+  --hh:90px;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:95px}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-stopped{overflow:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Geist',Arial,Helvetica,sans-serif;font-weight:400;overflow-x:clip;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;padding:0;text-align:left}
+h1,h2,h3,p,ol,ul{margin:0;padding:0}
+ol,ul{list-style:none}
+img{display:block;max-width:100%}
+:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
+::selection{background:var(--gold);color:var(--bg)}
+
+/* ---------- type ---------- */
+h1,h2{margin-left:-.055em}
+h1{font-size:clamp(54px,7.4vw,124px);font-weight:400;line-height:.98;letter-spacing:-.055em}
+h1 em{color:var(--gold);font-style:normal}
+h2{font-size:clamp(38px,4.8vw,78px);line-height:1.02;letter-spacing:-.045em;font-weight:400}
+.eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);display:flex;align-items:center;gap:12px;margin-bottom:26px}
+.lead,.copy{color:var(--muted);line-height:1.75;font-size:17px;max-width:520px}
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.14em;margin-bottom:-.14em}
+.wi{display:inline-block;will-change:transform}
+.js [data-split]{visibility:hidden}
+.js [data-r]{opacity:0}
+.reduce [data-r]{opacity:1!important}.reduce [data-split]{visibility:visible!important}
+.fw{transition:none}
+
+/* ---------- buttons ---------- */
+.button{position:relative;display:inline-flex;gap:35px;align-items:center;justify-content:space-between;padding:17px 24px;color:var(--bg);background:var(--gold);font-size:13px;font-weight:500;border:1px solid var(--gold);overflow:hidden;isolation:isolate;white-space:nowrap}
+.button::before{content:"";position:absolute;inset:0;background:#f4dfb2;transform:translateY(101%);transition:transform .55s var(--e);z-index:-1}
+.button:hover::before{transform:none}
+.button span{display:inline-block;transition:transform .5s var(--e)}
+.button:hover span{transform:translate(4px,-4px)}
+.text-link{position:relative;font-size:13px;padding-bottom:7px;display:inline-block}
+.text-link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--blue);transform-origin:left;transition:transform .6s var(--e)}
+.text-link:hover::after{transform:scaleX(0);transform-origin:right}
+
+/* ---------- loader & progress ---------- */
+.loader{display:none}
+.js .loader{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center}
+.ld-in{display:grid;gap:26px;justify-items:center;width:min(240px,60vw)}
+.ld-in img{width:170px;height:60px;object-fit:contain;opacity:0;transform:translateY(14px)}
+.ld-bar{height:2px;width:100%;background:var(--gold);transform:scaleX(0);transform-origin:left}
+.progress{position:fixed;left:0;top:0;height:2px;width:100%;background:var(--gold);transform:scaleX(0);transform-origin:left;z-index:60}
+
+/* ---------- header ---------- */
+header{position:fixed;inset:0 0 auto 0;height:var(--hh);padding:0 6%;display:flex;align-items:center;justify-content:space-between;z-index:50;transition:transform .7s var(--e),background .4s,border-color .4s;border-bottom:1px solid transparent}
+header.scrolled{background:rgba(29,29,32,.96);border-color:var(--line)}
+header.hide{transform:translateY(-101%)}
+.js header{transform:translateY(-101%)}
+.js header.ready{transform:none}
+.js header.ready.hide{transform:translateY(-101%)}
+nav{display:flex;align-items:center;gap:28px;font-size:13px}
+nav a:not(.button){position:relative;padding:6px 0}
+nav a:not(.button)::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--gold);transform:scaleX(0);transform-origin:right;transition:transform .5s var(--e)}
+nav a:not(.button):hover::after{transform:scaleX(1);transform-origin:left}
+.menu{display:none;border:1px solid var(--line);padding:10px 14px;font-size:13px}
+
+/* ---------- hero ---------- */
+.hero{position:relative;min-height:max(100svh,720px);display:flex;align-items:center;overflow:hidden}
+.hero-img{position:absolute;left:0;top:-6%;width:100%;height:112%;object-fit:cover;will-change:transform}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#17191df5,#17191d9e 55%,#17191d25),linear-gradient(0deg,var(--bg),transparent 35%)}
+.hero-content{position:relative;z-index:1;padding:130px var(--pad) 110px;width:100%}
+.hero h1{margin:6px 0 34px}
+.hero-p{max-width:480px;color:#d2d7df;line-height:1.75;font-size:18px}
+.actions{display:flex;gap:27px;align-items:center;margin-top:38px;flex-wrap:wrap}
+.hero-note{position:absolute;bottom:35px;right:6%;z-index:2;font-size:10px;letter-spacing:.2em;color:#abc6d3}
+.js .hero [data-h]{opacity:0}
+.strip{padding:34px var(--pad);display:grid;grid-template-columns:repeat(5,1fr);background:#202125;gap:20px;position:relative}
+.strip div{padding:6px 0;transition:transform .6s var(--e)}
+.strip div:hover{transform:translateY(-4px)}
+.strip small{display:block;color:var(--blue);font-size:10px;letter-spacing:.16em;margin-bottom:14px}
+.strip strong{font-weight:400;font-size:15px}
+
+section{position:relative}
+.wrap{padding:0 var(--pad)}
+.sec-head{display:grid;grid-template-columns:1.1fr 1fr;gap:90px;align-items:end}
+.sec-head .eyebrow{margin-bottom:22px}
+
+/* ---------- WHAT WE DO — sticky scrollytelling ---------- */
+.wwd{padding-top:150px}
+.wwd-track{height:calc(100vh + 5 * 62vh);margin-top:40px;position:relative}
+.wwd-stage{position:sticky;top:0;height:100vh;padding:calc(var(--hh) + 10px) var(--pad) 36px;display:grid;grid-template-columns:1.05fr 1fr;gap:6vw;align-items:center}
+.wwd-list{position:relative;padding-left:34px}
+.wwd-rail{position:absolute;left:0;top:6px;bottom:6px;width:2px;background:var(--line)}
+.wwd-rail i{position:absolute;inset:0;background:var(--gold);transform:scaleY(0);transform-origin:top}
+.wwd-item{display:block;width:100%;padding:clamp(8px,1.6vh,16px) 0}
+.wwd-item .row{display:flex;align-items:baseline;gap:20px}
+.wwd-item .t{font-size:clamp(27px,min(3.7vw,6.4vh),58px);line-height:1.06;letter-spacing:-.04em;color:rgba(232,237,244,.26);transition:color .6s var(--e),transform .8s var(--e);display:block}
+.wwd-item:hover .t{color:rgba(232,237,244,.6)}
+.wwd-item .d{display:grid;grid-template-rows:0fr;transition:grid-template-rows .8s var(--e);padding-left:10px}
+.wwd-item .d p{overflow:hidden;color:var(--muted);line-height:1.7;font-size:15.5px;max-width:470px;opacity:0;transition:opacity .5s}
+.wwd-item.on .t{color:var(--ink);transform:translateX(10px)}
+.wwd-item.on .d{grid-template-rows:1fr}
+.wwd-item.on .d p{opacity:1;transition:opacity .8s .25s;padding-top:12px}
+.vis{position:relative;background:var(--panel);aspect-ratio:1/1;width:100%;max-height:calc(100vh - 150px);max-width:calc(100vh - 150px);justify-self:end}
+.sc{position:absolute;inset:0;opacity:0;transition:opacity .5s;pointer-events:none}
+.sc.on{opacity:1}
+.sc svg{width:100%;height:100%;display:block;overflow:visible;padding:4%}
+.vis-count{position:absolute;left:22px;top:18px;font-size:12px;color:var(--muted);letter-spacing:.1em;display:flex;gap:8px;align-items:baseline;z-index:2}
+.vis-count b{font-weight:400;color:var(--gold);font-size:12px}
+.vis-tag{position:absolute;right:22px;top:18px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);z-index:2}
+
+/* svg scene mechanics */
+.a{opacity:0;transform:translateY(16px);transition:opacity .8s var(--e),transform .8s var(--e)}
+.on>svg .a,.on .a{opacity:1;transform:none;transition-delay:calc(var(--i,0)*70ms + 150ms)}
+.dr{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.6s var(--e)}
+.on .dr{stroke-dashoffset:0;transition-delay:calc(var(--i,0)*90ms + 200ms)}
+.ln{transform-box:fill-box;transform-origin:left;transform:scaleX(0);transition:transform .9s var(--e)}
+.on .ln{transform:scaleX(1);transition-delay:calc(var(--i,0)*70ms + 250ms)}
+.pop{transform-box:fill-box;transform-origin:center;transform:scale(.4);opacity:0;transition:transform .9s var(--e),opacity .6s}
+.on .pop{transform:none;opacity:1;transition-delay:calc(var(--i,0)*90ms + 200ms)}
+@keyframes lit{0%,100%{fill:var(--tile)}50%{fill:#8e7d52}}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+@keyframes halo{0%{transform:scale(1);opacity:.8}100%{transform:scale(3.2);opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes ledk{0%,100%{fill:var(--tile)}45%{fill:var(--blue)}}
+@keyframes flow{to{stroke-dashoffset:-36}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+rect.lit{animation:lit 3.4s ease-in-out infinite}
+.seg{animation:pulse 2.6s ease-in-out infinite;animation-delay:var(--d,0s)}
+.halo{transform-box:fill-box;transform-origin:center;animation:halo 2.6s ease-out infinite}
+.spin{transform-box:view-box;transform-origin:50% 50%;animation:spin 28s linear infinite}
+.spin.r{animation-direction:reverse;animation-duration:40s}
+.led{fill:var(--tile);animation:ledk 3s ease-in-out infinite}
+.alert{fill:var(--gold);animation:pulse 1.6s ease-in-out infinite}
+.flowl{stroke-dasharray:4 14;animation:flow 1.6s linear infinite}
+.float{animation:bob 4s ease-in-out infinite}
+svg text{font-family:'Geist',Arial,sans-serif}
+
+/* approach statement */
+.approach{padding-top:60px;padding-bottom:150px;display:grid;grid-template-columns:1fr 1.25fr;gap:90px;align-items:start}
+.approach h3{font-size:clamp(34px,4vw,64px);line-height:1.04;letter-spacing:-.045em;font-weight:400}
+.approach .eyebrow{margin-bottom:22px}
+.approach p.fill{font-size:clamp(22px,2.5vw,38px);line-height:1.28;letter-spacing:-.03em;max-width:760px}
+
+/* ---------- EMS ---------- */
+.panel{background:var(--panel)}
+.feature-sec{padding:130px var(--pad)}
+.feature{display:grid;grid-template-columns:1.05fr 1fr;gap:70px;align-items:center}
+.img-reveal{position:relative;overflow:hidden;clip-path:inset(0 0 0 0)}
+.js .img-reveal{clip-path:inset(0 0 100% 0)}
+.reduce .img-reveal{clip-path:none!important}
+.ir-in{will-change:transform}
+.img-reveal img{width:100%;height:116%;margin-top:-8%;object-fit:cover}
+.photo-wrap{height:560px}
+.photo-wrap .ir-in,.photo-wrap img{height:100%}
+.photo-wrap img{height:118%;margin-top:-9%}
+.feature h2{margin-bottom:26px}
+.pills{display:flex;flex-wrap:wrap;gap:10px;margin:28px 0 36px}
+.pills span{border:1px solid #496273;color:#b9d9e9;padding:9px 14px;font-size:11.5px;transition:background .4s,color .4s,border-color .4s}
+.pills span:hover{background:var(--blue);color:var(--bg);border-color:var(--blue)}
+.solutions{margin-top:90px;display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
+.solutions article{border-top:1px solid #4a515a;padding-top:26px;position:relative;transition:transform .7s var(--e)}
+.solutions article::before{content:"";position:absolute;left:0;top:-1px;height:1px;width:100%;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .8s var(--e)}
+.solutions article:hover::before{transform:scaleX(1)}
+.solutions small{display:block;color:var(--blue);font-size:10.5px;letter-spacing:.18em}
+.solutions h3{font-size:26px;font-weight:400;letter-spacing:-.03em;margin:18px 0 14px}
+.solutions p{font-size:15px;color:var(--muted);line-height:1.75}
+
+/* ---------- DIGITAL PLATFORMS — horizontal pin ---------- */
+.plat{padding-top:0}
+.plat-pin{position:relative;height:100vh;overflow:hidden;padding-top:var(--hh)}
+.plat-track{display:flex;gap:2.2vw;padding:0 var(--pad);width:max-content;height:100%;align-items:stretch;padding-bottom:74px}
+.plat-intro{width:min(38vw,560px);flex:none;display:flex;flex-direction:column;justify-content:center;padding-right:2vw}
+.plat-intro h2{margin-bottom:28px}
+.pp{flex:none;width:clamp(440px,42vw,700px);background:var(--panel);display:flex;flex-direction:column;position:relative}
+.pp-vis{flex:1;min-height:0;background:var(--deep);position:relative;overflow:hidden}
+.pp-vis svg{position:absolute;inset:0;width:100%;height:100%;padding:3% 4%}
+.pp-txt{padding:30px 34px 34px}
+.pp-txt small{display:flex;justify-content:space-between;color:var(--blue);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:16px}
+.pp-txt small b{font-weight:400;color:var(--gold)}
+.pp-txt h3{font-size:clamp(34px,3.6vw,56px);line-height:1;letter-spacing:-.045em;font-weight:400;margin-bottom:16px}
+.pp-txt p{font-size:15px;line-height:1.7;color:var(--muted);max-width:520px}
+.plat-end{width:8vw;flex:none}
+.plat-prog{position:absolute;left:var(--pad);right:var(--pad);bottom:30px;display:flex;align-items:center;gap:20px;font-size:12px;color:var(--muted);letter-spacing:.1em}
+.plat-prog .bar{flex:1;height:2px;background:var(--line);position:relative;overflow:hidden}
+.plat-prog .bar i{position:absolute;inset:0;background:var(--gold);transform:scaleX(0);transform-origin:left}
+.plat-prog b{color:var(--gold);font-weight:400}
+
+/* tech marquee */
+.tech{padding:130px var(--pad) 150px;display:grid;grid-template-columns:1fr 3fr;gap:60px;align-items:start}
+.tech .eyebrow{margin:6px 0 0}
+.tech-grid{display:grid;grid-template-columns:repeat(5,1fr);column-gap:28px}
+.tech-grid li{position:relative;padding:24px 0 54px;border-top:1px solid var(--line);font-size:clamp(18px,1.7vw,25px);letter-spacing:-.025em;color:var(--muted);transition:color .5s}
+.tech-grid li::before{content:"";position:absolute;left:0;top:-1px;height:1px;width:100%;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .8s var(--e)}
+.tech-grid li:hover{color:var(--ink)}
+.tech-grid li:hover::before{transform:scaleX(1)}
+
+/* ---------- HOW WE BUILD — sticky isometric ---------- */
+.build{background:var(--panel);border-block:1px solid var(--line)}
+.build-track{height:calc(100vh + 4 * 70vh);position:relative}
+.build-stage{position:sticky;top:0;height:100vh;padding:calc(var(--hh) + 6px) var(--pad) 30px;display:grid;grid-template-columns:1fr 1fr;gap:4vw;align-items:center}
+.build-copy h2{margin-bottom:20px;font-size:clamp(38px,min(4.6vw,8vh),74px)}
+.build-copy .lead{max-width:440px;margin-bottom:clamp(14px,3vh,34px);font-size:16.5px}
+.steps{max-width:560px}
+.step{display:block;width:100%;border-top:1px solid var(--line);padding:clamp(10px,1.7vh,18px) 0;position:relative}
+.step::before{content:"";position:absolute;left:0;top:-1px;height:1px;width:100%;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .9s var(--e)}
+.step.on::before{transform:scaleX(1)}
+.step .row{display:block}
+.step .t{font-size:clamp(20px,2.1vw,29px);letter-spacing:-.03em;color:rgba(232,237,244,.38);transition:color .5s}
+.step .d{display:grid;grid-template-rows:0fr;transition:grid-template-rows .8s var(--e)}
+.step .d p{overflow:hidden;opacity:0;color:var(--muted);font-size:15px;line-height:1.65;transition:opacity .4s}
+.step.on .t{color:var(--ink)}
+.step.on .d{grid-template-rows:1fr}
+.step.on .d p{opacity:1;padding-top:8px;transition:opacity .8s .2s}
+.srv{animation:pulse 3s ease-in-out infinite}
+
+/* ---------- team / cta / footer ---------- */
+.team{padding:140px var(--pad);display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center}
+.team .h-img{height:560px}
+.team h2{margin-bottom:26px}
+.roles{display:flex;flex-wrap:wrap;gap:16px 18px;margin-top:34px}
+.roles span{padding-bottom:9px;border-bottom:1px solid #59616c;font-size:13px;color:#ccd1db;transition:border-color .4s,color .4s}
+.roles span:hover{border-color:var(--gold);color:var(--ink)}
+.cta{background:radial-gradient(at 0% 0%,#2b4454,transparent 65%),#222328;display:flex;justify-content:space-between;align-items:center;gap:45px;border-block:1px solid #496273;padding:130px var(--pad)}
+.cta h2{max-width:820px;font-size:clamp(40px,5.6vw,92px)}
+.cta .eyebrow{margin-bottom:26px}
+footer{padding:75px var(--pad) 26px;background:#19191c;position:relative;overflow:hidden}
+.footer-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:60px}
+footer p,footer a{font-size:13.5px;line-height:1.9;color:var(--muted)}
+footer h3{font-size:10px;font-weight:400;color:var(--gold);letter-spacing:.18em;margin-bottom:18px}
+footer a:hover{color:var(--ink)}
+.giant{font-size:26vw;line-height:.8;letter-spacing:-.03em;font-weight:600;margin:70px 0 0;white-space:nowrap;display:block;width:max-content;user-select:none;-webkit-text-stroke:.035em currentColor;paint-order:stroke fill;will-change:transform,opacity}
+.giant span{display:inline;color:#232328;-webkit-text-stroke-color:#232328}
+.giant .g99{color:#2a2b30;-webkit-text-stroke-color:#2a2b30}
+.foot-bottom{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-top:22px;font-size:12px;position:relative}
+.foot-bottom p,.foot-bottom a{font-size:12px}
+.disclaimer{margin-top:14px;font-size:11.5px!important;color:#7f838c!important}
+
+/* ---------- responsive ---------- */
+@media (max-width:1100px){
+  .sec-head,.approach{grid-template-columns:1fr;gap:34px}
+  .feature,.team{grid-template-columns:1fr;gap:44px}
+  .tech{grid-template-columns:1fr;gap:34px}
+  .tech-grid{grid-template-columns:repeat(3,1fr)}
+  .photo-wrap,.team .h-img{height:420px}
+  .strip{grid-template-columns:1fr 1fr;row-gap:28px}
+}
+@media (max-width:900px){
+  :root{--pad:6%;--hh:70px}
+  .menu{display:block;position:relative;z-index:60}
+  nav{position:fixed;inset:0;background:var(--bg);flex-direction:column;align-items:flex-start;justify-content:center;gap:18px;padding:0 var(--pad);font-size:34px;letter-spacing:-.04em;transform:translateY(-100%);transition:transform .8s var(--e);z-index:55}
+  nav.open{transform:none}
+  nav a{opacity:0;transform:translateY(24px);transition:opacity .6s var(--e),transform .6s var(--e)}
+  nav.open a{opacity:1;transform:none}
+  nav.open a:nth-child(1){transition-delay:.25s}nav.open a:nth-child(2){transition-delay:.31s}nav.open a:nth-child(3){transition-delay:.37s}nav.open a:nth-child(4){transition-delay:.43s}nav.open a:nth-child(5){transition-delay:.49s}
+  nav .button{font-size:15px;margin-top:20px}
+  .hero-note{display:none}
+  .hero-content{padding-top:120px}
+  .wwd{padding-top:100px}
+  .wwd-track{height:calc(100vh + 5 * 55vh)}
+  .wwd-stage{grid-template-columns:1fr;grid-template-rows:minmax(0,38%) auto;gap:18px;align-content:start;padding-top:calc(var(--hh) + 6px)}
+  .vis{order:-1;aspect-ratio:auto;max-height:none;max-width:none;height:100%}
+  .sc svg{padding:2%}
+  .wwd-list{padding-left:20px}
+  .wwd-item{padding:6px 0}
+  .wwd-item .t{font-size:clamp(22px,6.2vw,30px)}
+  .wwd-item .d{padding-left:6px}
+  .wwd-item .d p{font-size:14px}
+  .solutions{grid-template-columns:1fr;gap:34px;margin-top:60px}
+  .feature-sec{padding:90px var(--pad)}
+  .plat-pin{height:auto;padding-top:90px;overflow:visible}
+  .plat-track{width:100%;flex-direction:column;padding:0 var(--pad) 30px;gap:18px;height:auto}
+  .plat-intro{width:100%;padding:0 0 24px;justify-content:flex-start}
+  .pp{width:100%;margin:0!important;height:auto}
+  .pp-vis{flex:none;aspect-ratio:560/300}
+  .plat-end,.plat-prog{display:none}
+  .build-track{height:calc(100vh + 4 * 55vh)}
+  .build-stage{grid-template-columns:1fr;grid-template-rows:minmax(0,34%) auto;gap:10px;align-content:start}
+  .tech-grid{grid-template-columns:repeat(2,1fr)}
+  .build-copy h2{font-size:30px;margin-bottom:10px}
+  .build-copy .lead{display:none}
+  .step .t{font-size:19px}
+  .step .d p{font-size:13.5px}
+  .team{padding:90px var(--pad)}
+  .cta{flex-direction:column;align-items:flex-start;padding:90px var(--pad)}
+  .footer-grid{grid-template-columns:1fr;gap:34px}
+  .approach{padding-bottom:100px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
+  .a,.pop{opacity:1;transform:none}.dr{stroke-dashoffset:0}.ln{transform:none}
+}
+</style>
+</head>
+<body>
+
+<div class="loader" aria-hidden="true"><div class="ld-in"><img class="ld-logo" src="assets/deck99-logo.png" alt=""><div class="ld-bar"></div></div></div>
+<div class="progress" aria-hidden="true"></div>
+
+<header>
+  <a href="#top" class="brand" aria-label="Deck99 home"><img src="assets/deck99-logo.png" alt="Deck99" style="display:block;width:170px;height:60px;object-fit:contain"></a>
+  <button class="menu" aria-label="Open navigation" aria-expanded="false" aria-controls="nav">Menu</button>
+  <nav id="nav" aria-label="Main navigation">
+    <a href="#expertise">Expertise</a>
+    <a href="#energy">Energy software</a>
+    <a href="#platforms">Platforms</a>
+    <a href="#about">About us</a>
+    <a class="button mag" href="#contact">Let's talk <span>↗</span></a>
+  </nav>
+</header>
+
+<main>
+<!-- ================= HERO ================= -->
+<section class="hero" id="top">
+  <img class="hero-img" src="assets/infrastructure.jpg" alt="">
+  <div class="hero-content">
+    <p class="eyebrow" data-h>ENERGY. SOFTWARE. CONNECTED.</p>
+    <h1 data-split="hero">Software for<br>what comes <em>next.</em></h1>
+    <p class="hero-p" data-h>Custom-built platforms for energy innovators, blockchain ecosystems and real-world assets. From complex challenges to technology that works.</p>
+    <div class="actions" data-h>
+      <a class="button mag" href="#expertise">Explore our expertise <span>↗</span></a>
+      <a class="text-link" href="#contact">Discuss your project ↗</a>
+    </div>
+  </div>
+  <p class="hero-note" data-h>OSIJEK, CROATIA | BUILT TO CONNECT</p>
+</section>
+<div class="strip">
+  <div data-r><small>ENERGY</small><strong>Intelligent asset control</strong></div>
+  <div data-r><small>BLOCKCHAIN</small><strong>Connected digital ecosystems</strong></div>
+  <div data-r><small>SOFTWARE</small><strong>Custom platform development</strong></div>
+  <div data-r><small>DESIGN</small><strong>Digital experiences that connect</strong></div>
+  <div data-r><small>DELIVERY</small><strong>From concept to integration</strong></div>
+</div>
+
+<!-- ================= WHAT WE DO ================= -->
+<section class="wwd" id="expertise">
+  <div class="wrap sec-head">
+    <div>
+      <p class="eyebrow" data-r>WHAT WE DO</p>
+      <h2 data-split>Deep technology.<br>Practical purpose.</h2>
+    </div>
+    <p class="lead" data-r>We build scalable platforms for PV, battery storage, tokenized assets and infrastructure management. Domain knowledge and software engineering come together to make complex systems easier to operate.</p>
+  </div>
+
+  <div class="wwd-track" id="wwdTrack">
+    <div class="wwd-stage">
+      <ol class="wwd-list" id="wwdList">
+        <span class="wwd-rail" aria-hidden="true"><i></i></span>
+        <li><button class="wwd-item on" aria-current="true"><span class="row"><span class="t">Energy software development</span></span><span class="d"><p>Platforms for PV and BESS management, real-time performance monitoring, energy data visualization and asset lifecycle visibility.</p></span></button></li>
+        <li><button class="wwd-item"><span class="row"><span class="t">Blockchain solutions</span></span><span class="d"><p>Digital infrastructure for asset tokenization, transparent transactions and connected blockchain ecosystems.</p></span></button></li>
+        <li><button class="wwd-item"><span class="row"><span class="t">Development as a service</span></span><span class="d"><p>Software development expertise to turn a product concept into a technically robust platform ready for integration.</p></span></button></li>
+        <li><button class="wwd-item"><span class="row"><span class="t">Web design &amp; development</span></span><span class="d"><p>Clear digital experiences and web applications that connect users with the systems and information they need.</p></span></button></li>
+        <li><button class="wwd-item"><span class="row"><span class="t">Cybersecurity</span></span><span class="d"><p>Security considered throughout development, with role-based access and secure multi-tenant architecture.</p></span></button></li>
+      </ol>
+      <div class="vis" id="wwdVis" aria-hidden="true">
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap approach">
+    <div>
+      <p class="eyebrow" data-r>OUR APPROACH</p>
+      <h3 data-split>One connected perspective</h3>
+    </div>
+    <p class="fill" data-fill>Backend development, DevOps, data engineering and product management working around the same operational challenge.</p>
+  </div>
+</section>
+
+<!-- ================= ENERGY ================= -->
+<section class="panel feature-sec" id="energy">
+  <div class="feature">
+    <div class="img-reveal photo-wrap"><div class="ir-in"><img class="photo" src="assets/energy.jpg" alt="Containerised battery storage unit on a gravel pad"></div></div>
+    <div>
+      <p class="eyebrow" data-r>ENERGY MANAGEMENT SOFTWARE</p>
+      <h2 data-split>Complex energy.<br>Clear control.</h2>
+      <p class="copy" data-r>Our cloud-based EMS brings real-time monitoring, control and optimization to PV systems, BESS, EV chargers and industrial loads. Scalable integration helps operators understand performance and make informed decisions.</p>
+      <div class="pills">
+        <span data-r>PV &amp; BESS</span><span data-r>Real-time monitoring</span><span data-r>Asset optimization</span><span data-r>Cloud platforms</span>
+      </div>
+      <div class="actions" style="margin-top:0"><a class="button mag" href="https://ems.deck99.hr/" data-r>Explore our EMS platform <span>↗</span></a><a class="text-link" href="#contact" data-r>Talk about your energy platform ↗</a></div>
+    </div>
+  </div>
+  <div class="solutions">
+    <article data-r><small>VISIBILITY</small><h3>See the whole asset</h3><p>Bring performance data and energy flows into a connected environment for asset owners, operators and energy managers.</p></article>
+    <article data-r><small>MOBILITY</small><h3>Stay connected</h3><p>Mobile access for remote monitoring, system anomalies, maintenance needs and energy market notifications.</p></article>
+    <article data-r><small>INTEGRATION</small><h3>Connect the systems</h3><p>Event-driven data flows and service-oriented architecture support independent scaling and deployment.</p></article>
+  </div>
+</section>
+
+<!-- ================= DIGITAL PLATFORMS ================= -->
+<section class="plat" id="platforms">
+  <div class="plat-pin" id="platPin">
+    <div class="plat-track" id="platTrack">
+      <div class="plat-intro">
+        <p class="eyebrow" data-r>DIGITAL PLATFORMS</p>
+        <h2 data-split>Beyond the interface.<br>Into the infrastructure.</h2>
+        <p class="lead" data-r>Software that connects physical assets with digital operations, ownership models and energy markets.</p>
+      </div>
+
+      <article class="pp">
+        <div class="pp-vis" id="pv0"></div>
+        <div class="pp-txt"><small>INFRASTRUCTURE MONITORING</small><h3>Blockchain operations.</h3><p>Real-time visibility, control and performance monitoring for large-scale crypto mining infrastructure, across a single site or a distributed network of facilities.</p></div>
+      </article>
+      <article class="pp">
+        <div class="pp-vis" id="pv1"></div>
+        <div class="pp-txt"><small>REAL-WORLD ASSETS</small><h3>Asset tokenization.</h3><p>Platforms for fractional ownership and on-chain transparency across energy infrastructure, real estate, equipment and investment vehicles, designed with compliance and scalability in mind.</p></div>
+      </article>
+      <article class="pp">
+        <div class="pp-vis" id="pv2"></div>
+        <div class="pp-txt"><small>ENERGY TRADING</small><h3>Connected energy markets.</h3><p>Software for decentralized trading and peer-to-peer energy exchange, with traceable transactions, automated settlement and dynamic pricing for microgrids and energy communities.</p></div>
+      </article>
+      <article class="pp">
+        <div class="pp-vis" id="pv3"></div>
+        <div class="pp-txt"><small>SAAS &amp; MOBILE</small><h3>Operations within reach.</h3><p>Mobile-friendly onboarding, infrastructure incident alerts and energy usage insights linked to pricing and grid data.</p></div>
+      </article>
+      <div class="plat-end"></div>
+    </div>
+    <div class="plat-prog" aria-hidden="true"><span class="bar"><i id="platBar"></i></span></div>
+  </div>
+
+  <div class="tech">
+    <p class="eyebrow" data-r>TECHNOLOGY ECOSYSTEM</p>
+    <ul class="tech-grid">
+      <li data-r>Node.js</li><li data-r>Spring</li><li data-r>React</li><li data-r>Solidity</li><li data-r>Microsoft Azure</li>
+      <li data-r>Grafana</li><li data-r>TypeScript</li><li data-r>AWS</li><li data-r>Web3.js</li><li data-r>InfluxDB</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= HOW WE BUILD ================= -->
+<section class="build" id="build">
+  <div class="build-track" id="buildTrack">
+    <div class="build-stage">
+      <div class="build-copy">
+        <p class="eyebrow">HOW WE BUILD</p>
+        <h2 data-split>Architecture with<br>room to grow.</h2>
+        <p class="lead">Clear boundaries. Connected data. Systems built around the domain they serve.</p>
+        <ol class="steps" id="steps">
+          <li><button class="step on" aria-current="true"><span class="row"><span class="t">Domain-driven design</span></span><span class="d"><p>Service boundaries support independent ownership, deployment and scaling.</p></span></button></li>
+          <li><button class="step"><span class="row"><span class="t">Event-driven data</span></span><span class="d"><p>Real-time flows for PV and BESS systems, alongside blockchain event listeners.</p></span></button></li>
+          <li><button class="step"><span class="row"><span class="t">Secure access</span></span><span class="d"><p>Multi-tenant access and role-based controls connect the right users with the right functions.</p></span></button></li>
+          <li><button class="step"><span class="row"><span class="t">Cloud-native infrastructure</span></span><span class="d"><p>Scalable infrastructure connects the application, deployment and operational layers.</p></span></button></li>
+        </ol>
+      </div>
+      <div class="vis" id="buildVis" aria-hidden="true">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TEAM ================= -->
+<section class="team" id="about">
+  <div>
+    <p class="eyebrow" data-r>THE TEAM BEHIND THE SYSTEMS</p>
+    <h2 data-split>Different disciplines.<br>One shared direction.</h2>
+    <p class="copy" data-r>Based in Osijek, Croatia, Deck99 combines more than a decade of experience and deep technology expertise with domain-specific knowledge. We build products end to end, from brand strategy to deployment and quality assurance, bringing digital experiences, backend development, DevOps, data engineering and blockchain together in one team.</p>
+    <div class="roles"><span data-r>Digital experience</span><span data-r>Backend development</span><span data-r>DevOps &amp; infrastructure</span><span data-r>Data engineering</span><span data-r>Blockchain</span></div>
+  </div>
+  <div class="img-reveal h-img"><div class="ir-in"><img src="assets/datacenter.jpg" alt="Data centre corridor lined with server racks"></div></div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="cta" id="contact">
+  <div>
+    <p class="eyebrow" data-r>LET'S BUILD TOGETHER</p>
+    <h2 data-split>Bring us the challenge.<br>Let's shape the solution.</h2>
+  </div>
+  <a class="button mag" href="https://www.linkedin.com/company/deck99" data-r>Connect on LinkedIn <span>↗</span></a>
+</section>
+</main>
+
+<footer>
+  <div class="footer-grid">
+    <p data-r>Custom software for energy innovators,<br>blockchain ecosystems and real-world assets.</p>
+    <div data-r><h3>CONTACT &amp; COMPANY</h3><p>Deck 99 Ltd.<br>Josipa Jurja Strossmayera 341<br>31000 Osijek, Croatia<br>VAT: HR91512597206</p><p><a href="https://www.linkedin.com/company/deck99">LinkedIn ↗</a></p></div>
+    <div data-r><h3>BANK DETAILS</h3><p>IBAN: HR8823600001103048254<br>BIC: ZABAHR2X<br>Zagrebačka banka d.d.<br>Trg bana Josipa Jelačića 10, Zagreb</p></div>
+  </div>
+  <div class="giant" id="giant" aria-hidden="true"><span>Deck</span><span class="g99">99</span></div>
+  <div class="foot-bottom"><p>© 2026 Deck99 Ltd. All rights reserved.</p><a href="#top" id="toTop">Back to top ↑</a></div>
+  <p class="disclaimer">Infrastructure imagery is AI-generated and illustrative; it does not depict completed Deck99 projects.</p>
+</footer>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script src="assets/vendor/ScrollTrigger.min.js"></script>
+<script src="assets/vendor/lenis.min.js"></script>
+<script>
+(function(){
+const $=(s,c=document)=>c.querySelector(s), $$=(s,c=document)=>[...c.querySelectorAll(s)];
+const root=document.documentElement;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const GOLD='#e3c27e',BLUE='#5aaacf',INK='#e8edf4',MUTED='#b5b9c2',PANEL='#24262b',TILE='#2b3945';
+const rnd=i=>((i*9301+49297)%233280)/233280;
+
+/* =====================================================
+   SCENES — "What we do" (drawn in code, one per service)
+   ===================================================== */
+const WWD=[
+/* 1 — Energy */ ()=>{
+  let cells='',segs='';
+  for(let r=0;r<3;r++)for(let c=0;c<4;c++){const i=r*4+c;
+    cells+=`<g class="a" style="--i:${3+i}"><rect ${(i%5==1||i==6||i==10)?`class="lit" style="animation-delay:-${(rnd(i)*3).toFixed(1)}s"`:''} x="${c*66}" y="${r*44}" width="60" height="38" rx="3" fill="${TILE}" stroke="${BLUE}" stroke-opacity=".55"/></g>`}
+  for(let k=0;k<5;k++)segs+=`<g class="a" style="--i:${14+k}"><rect class="seg" style="--d:${(k*.4).toFixed(1)}s" x="362" y="${359-k*34}" width="66" height="28" rx="3" fill="${GOLD}"/></g>`;
+  return `<svg viewBox="0 0 480 480">
+  <path class="dr" pathLength="1" d="M40 220 Q240 -50 440 220" fill="none" stroke="${GOLD}" stroke-width="2" stroke-linecap="round"/>
+  <g class="a" style="--i:2"><circle cx="240" cy="84" r="12" fill="${GOLD}"/><circle class="halo" cx="240" cy="84" r="12" fill="none" stroke="${GOLD}"/></g>
+  <g transform="translate(40 252) skewX(-16)">${cells}</g>
+  <path class="dr" style="--i:6" pathLength="1" d="M300 315 H350" fill="none" stroke="${GOLD}" stroke-width="2"/>
+  <circle r="4" fill="${GOLD}"><animateMotion dur="1.8s" repeatCount="indefinite" path="M300,315 L350,315"/></circle>
+  <g class="a" style="--i:12"><rect x="350" y="212" width="90" height="186" rx="10" fill="none" stroke="${BLUE}" stroke-width="2"/><rect x="380" y="203" width="30" height="9" rx="2" fill="${BLUE}"/></g>
+  ${segs}
+  <text class="a" style="--i:20" x="40" y="404" fill="${MUTED}" font-size="13">PV array</text>
+  <text class="a" style="--i:20" x="350" y="424" fill="${MUTED}" font-size="13">BESS</text>
+  <path class="dr" style="--i:8" pathLength="1" d="M40 462 L90 440 L140 452 L190 422 L240 438 L290 410 L340 432 L390 404 L440 416" fill="none" stroke="${BLUE}" stroke-width="2.5" stroke-linejoin="round"/>
+  </svg>`},
+/* 2 — Blockchain */ ()=>{
+  const N=[[240,150],[100,100],[390,90],[70,240],[410,230],[170,300],[320,300]];
+  const E=[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[1,3],[2,4],[5,6],[3,5],[4,6]];
+  let s='';
+  E.forEach(([a,b],i)=>s+=`<path class="dr" style="--i:${i}" pathLength="1" d="M${N[a]} L${N[b]}" stroke="${BLUE}" stroke-opacity=".6" stroke-width="1.6" fill="none"/>`);
+  [[0,1],[2,0],[0,4],[5,0],[6,4],[3,1]].forEach(([a,b],i)=>s+=`<circle r="4" fill="${GOLD}"><animateMotion dur="${(2.2+i*.35).toFixed(2)}s" begin="${(i*.4).toFixed(1)}s" repeatCount="indefinite" path="M${N[a]} L${N[b]}"/></circle>`);
+  N.forEach((p,i)=>s+=`<g class="pop" style="--i:${i+3}"><circle cx="${p[0]}" cy="${p[1]}" r="${i?11:19}" fill="${i?PANEL:GOLD}" stroke="${i?BLUE:GOLD}" stroke-width="2"/></g>`);
+  for(let i=0;i<4;i++){const x=40+i*108,last=i==3;
+    s+=`<g class="a" style="--i:${10+i}"><rect x="${x}" y="372" width="80" height="58" rx="8" fill="${PANEL}" stroke="${last?GOLD:BLUE}" stroke-width="2"/>
+    <path d="M${x+14} 392H${x+52}M${x+14} 406H${x+38}" stroke="${last?GOLD:BLUE}" stroke-opacity=".7" stroke-width="3" stroke-linecap="round"/>${last?`<rect class="seg" x="${x}" y="372" width="80" height="58" rx="8" fill="${GOLD}" fill-opacity=".2"/>`:''}</g>`;
+    if(i<3)s+=`<path class="dr" style="--i:${12+i}" pathLength="1" d="M${x+80} 401H${x+108}" stroke="${BLUE}" stroke-width="2"/>`}
+  return `<svg viewBox="0 0 480 480">${s}<text class="a" style="--i:16" x="40" y="456" fill="${MUTED}" font-size="13">Transparent transactions</text></svg>`},
+/* 3 — Development as a service */ ()=>{
+  const L=[[0,150,'b'],[0,100,'g'],[24,190,'i'],[24,120,'b'],[24,210,'m'],[48,90,'g'],[48,150,'b'],[24,170,'m'],[0,60,'g'],[0,210,'b'],[24,130,'i']];
+  const col={b:BLUE,g:GOLD,i:INK,m:'#5b6068'};
+  let s='';L.forEach(([ind,w,c],i)=>s+=`<rect class="ln" style="--i:${i}" x="${76+ind}" y="${104+i*22}" width="${w}" height="9" rx="4.5" fill="${col[c]}" ${c=='i'?'fill-opacity=".7"':''}/>`);
+  return `<svg viewBox="0 0 480 480">
+  <g class="a" style="--i:0"><rect x="50" y="56" width="380" height="296" rx="12" fill="#1d1d20" stroke="${BLUE}" stroke-opacity=".5" stroke-width="1.6"/>
+  <circle cx="76" cy="80" r="5" fill="${GOLD}"/><circle cx="94" cy="80" r="5" fill="${BLUE}"/><circle cx="112" cy="80" r="5" fill="#5b6068"/></g>
+  ${s}
+  <text class="a" style="--i:12" x="50" y="396" fill="${MUTED}" font-size="13">Concept</text>
+  <text class="a" style="--i:12" x="430" y="396" fill="${GOLD}" font-size="13" text-anchor="end">Integration-ready</text>
+  <rect x="50" y="412" width="380" height="6" rx="3" fill="#33363c"/>
+  <rect class="ln" style="--i:13" x="50" y="412" width="380" height="6" rx="3" fill="${GOLD}"/>
+  <g class="a" style="--i:14"><circle cx="430" cy="415" r="11" fill="${GOLD}"/><path d="M425 415l4 4 7-8" stroke="#1d1d20" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </svg>`},
+/* 4 — Web */ ()=>`<svg viewBox="0 0 480 480">
+  <g class="a" style="--i:0"><rect x="40" y="60" width="400" height="350" rx="12" fill="#1d1d20" stroke="${BLUE}" stroke-opacity=".5" stroke-width="1.6"/>
+  <circle cx="64" cy="84" r="5" fill="${GOLD}"/><circle cx="82" cy="84" r="5" fill="${BLUE}"/><circle cx="100" cy="84" r="5" fill="#5b6068"/>
+  <rect x="150" y="76" width="200" height="16" rx="8" fill="#2c2e34"/></g>
+  <g class="a" style="--i:2"><rect x="64" y="116" width="60" height="10" rx="5" fill="${INK}" fill-opacity=".8"/><rect x="300" y="116" width="30" height="10" rx="5" fill="#5b6068"/><rect x="342" y="116" width="30" height="10" rx="5" fill="#5b6068"/><rect x="384" y="112" width="40" height="18" rx="2" fill="${GOLD}"/></g>
+  <g class="a" style="--i:4"><rect x="64" y="158" width="210" height="18" rx="4" fill="${INK}"/><rect x="64" y="186" width="150" height="18" rx="4" fill="${INK}"/><rect x="64" y="222" width="190" height="8" rx="4" fill="#5b6068"/><rect x="64" y="238" width="140" height="8" rx="4" fill="#5b6068"/></g>
+  <g class="a" style="--i:6"><rect id="webBtn" x="64" y="268" width="96" height="30" fill="${GOLD}"/></g>
+  <g class="pop" style="--i:7"><rect x="300" y="152" width="124" height="146" fill="${BLUE}" fill-opacity=".25"/><path d="M300 298l44-52 36 30 44-60v82z" fill="${BLUE}" fill-opacity=".5"/></g>
+  <g class="a" style="--i:9"><rect x="64" y="326" width="108" height="64" fill="${PANEL}" stroke="${BLUE}" stroke-opacity=".4"/></g>
+  <g class="a" style="--i:10"><rect x="186" y="326" width="108" height="64" fill="${PANEL}" stroke="${BLUE}" stroke-opacity=".4"/></g>
+  <g class="a" style="--i:11"><rect x="308" y="326" width="116" height="64" fill="${PANEL}" stroke="${BLUE}" stroke-opacity=".4"/></g>
+  <path d="M0 0L0 17 4.5 13 8 20.5 10.5 19.5 7 12.5 13 12.5Z" fill="${INK}" stroke="#1d1d20" stroke-width="1.5" stroke-linejoin="round">
+    <animateMotion dur="6s" repeatCount="indefinite" keyTimes="0;.35;.6;.85;1" keyPoints="0;1;1;0;0" calcMode="spline" keySplines=".5 0 .2 1;.5 0 .5 1;.5 0 .2 1;.5 0 .5 1" path="M380,380 L120,286"/></path>
+  </svg>`,
+/* 5 — Security */ ()=>{
+  return `<svg viewBox="0 0 480 480">
+  <g class="spin"><circle class="dr" pathLength="1" cx="240" cy="240" r="100" fill="none" stroke="${BLUE}" stroke-opacity=".8" stroke-width="1.6"/></g>
+  <g class="spin r"><circle cx="240" cy="240" r="150" fill="none" stroke="${BLUE}" stroke-opacity=".5" stroke-width="1.6" stroke-dasharray="3 9"/><g class="pop" style="--i:6"><circle cx="390" cy="240" r="8" fill="${GOLD}"/></g><g class="pop" style="--i:7"><circle cx="90" cy="240" r="8" fill="${BLUE}"/></g></g>
+  <g class="spin" style="animation-duration:60s"><circle cx="240" cy="240" r="205" fill="none" stroke="${BLUE}" stroke-opacity=".3" stroke-width="1.6" stroke-dasharray="1 10" stroke-linecap="round"/><g class="pop" style="--i:8"><circle cx="240" cy="35" r="8" fill="${BLUE}"/></g></g>
+  <g class="pop" style="--i:1"><path d="M240 168 L296 188 V248 C296 284 272 306 240 320 C208 306 184 284 184 248 V188 Z" fill="${PANEL}" stroke="${GOLD}" stroke-width="3" stroke-linejoin="round"/></g>
+  <path class="dr" style="--i:4" pathLength="1" d="M214 244l19 19 34-40" fill="none" stroke="${GOLD}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <g class="a" style="--i:9"><rect x="40" y="96" width="82" height="26" rx="13" fill="#1d1d20" stroke="${BLUE}"/><text x="81" y="113.5" text-anchor="middle" fill="${INK}" font-size="12">Admin</text></g>
+  <g class="a" style="--i:10"><rect x="342" y="64" width="98" height="26" rx="13" fill="#1d1d20" stroke="${BLUE}"/><text x="391" y="81.5" text-anchor="middle" fill="${INK}" font-size="12">Operator</text></g>
+  <g class="a" style="--i:11"><rect x="350" y="388" width="82" height="26" rx="13" fill="#1d1d20" stroke="${BLUE}"/><text x="391" y="405.5" text-anchor="middle" fill="${INK}" font-size="12">Viewer</text></g>
+  <text class="a" style="--i:12" x="40" y="420" fill="${MUTED}" font-size="13">Multi-tenant</text>
+  </svg>`}
+];
+const TAGS=['Energy','Blockchain','Software','Web','Security'];
+const vis=$('#wwdVis'); const scenes=WWD.map((f,i)=>{const d=document.createElement('div');d.className='sc'+(i?'':' on');d.innerHTML=f();vis.appendChild(d);return d});
+const tag=document.createElement('div');tag.className='vis-tag';tag.textContent=TAGS[0];vis.appendChild(tag);
+
+/* =====================================================
+   SCENES — "How we build" (one diagram per principle)
+   ===================================================== */
+const BLD=[
+/* 1 — Domain-driven design: bounded contexts */ ()=>{
+  const B=[['Monitoring',40,70,190,140,0],['Assets',260,70,180,110,1],['Trading',40,250,150,130,2],['Access',220,220,220,160,3]];
+  let s='';
+  B.forEach(([n,x,y,w,h],i)=>{
+    s+=`<g class="a" style="--i:${i*2}"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12" fill="#1d1d20" stroke="${i==2?GOLD:BLUE}" stroke-opacity="${i==2?1:.6}" stroke-width="1.8"/>
+    <text x="${x+20}" y="${y+34}" fill="${INK}" font-size="15">${n}</text>
+    <circle cx="${x+26}" cy="${y+h-30}" r="7" fill="${i==2?GOLD:BLUE}"/><circle cx="${x+52}" cy="${y+h-30}" r="7" fill="${i==2?GOLD:BLUE}" fill-opacity=".55"/><circle cx="${x+78}" cy="${y+h-30}" r="7" fill="${i==2?GOLD:BLUE}" fill-opacity=".25"/>
+    ${i==2?`<rect class="seg" x="${x}" y="${y}" width="${w}" height="${h}" rx="12" fill="${GOLD}" fill-opacity=".08"/>`:''}</g>`});
+  [['M230 140 L260 125',1],['M110 210 V250',2],['M350 180 V220',3],['M190 315 H220',4]].forEach(([d,i])=>s+=`<path class="dr" style="--i:${i+6}" pathLength="1" d="${d}" stroke="${GOLD}" stroke-width="2" fill="none"/>`);
+  [[245,132],[110,230],[350,200],[205,315]].forEach(([x,y],i)=>s+=`<g class="pop" style="--i:${i+10}"><circle cx="${x}" cy="${y}" r="5.5" fill="${GOLD}"/></g>`);
+  return `<svg viewBox="0 0 480 480">${s}<text class="a" style="--i:14" x="40" y="434" fill="${MUTED}" font-size="13">Independent ownership, deployment and scaling</text></svg>`},
+/* 2 — Event-driven data: producers → stream → consumers */ ()=>{
+  const P=[['PV & BESS systems',150],['Blockchain event listeners',290]],C=[['Dashboards',110],['Alerts',210],['Analytics',310]];
+  let s='';
+  P.forEach(([n,y],i)=>s+=`<g class="a" style="--i:${i}"><rect x="30" y="${y}" width="140" height="44" rx="22" fill="#1d1d20" stroke="${BLUE}" stroke-width="1.6"/><text x="100" y="${y+27}" text-anchor="middle" fill="${INK}" font-size="${i?11:12.5}">${n}</text></g>
+  <path class="dr" style="--i:${i+3}" pathLength="1" d="M170 ${y+22} C200 ${y+22} 200 ${i?300:180} 224 ${i?300:180}" stroke="${BLUE}" stroke-width="1.8" fill="none"/>
+  <circle r="4" fill="${GOLD}"><animateMotion dur="2.6s" begin="${i*.9}s" repeatCount="indefinite" path="M170,${y+22} C200,${y+22} 200,${i?300:180} 224,${i?300:180}"/></circle>`);
+  s+=`<g class="a" style="--i:2"><rect x="224" y="80" width="32" height="320" rx="16" fill="#1d1d20" stroke="${GOLD}" stroke-width="2"/><path class="flowl" d="M240 100V380" stroke="${GOLD}" stroke-width="3" stroke-linecap="round" style="animation-direction:reverse"/></g>
+  <text class="a" style="--i:3" x="240" y="62" text-anchor="middle" fill="${GOLD}" font-size="13">Real-time event stream</text>`;
+  C.forEach(([n,y],i)=>s+=`<path class="dr" style="--i:${i+5}" pathLength="1" d="M256 ${i==0?160:i==1?240:320} C290 ${i==0?160:i==1?240:320} 290 ${y+22} 320 ${y+22}" stroke="${BLUE}" stroke-width="1.8" fill="none"/>
+  <circle r="4" fill="${GOLD}"><animateMotion dur="2.4s" begin="${i*.7+1}s" repeatCount="indefinite" path="M256,${i==0?160:i==1?240:320} C290,${i==0?160:i==1?240:320} 290,${y+22} 320,${y+22}"/></circle>
+  <g class="a" style="--i:${i+7}"><rect x="320" y="${y}" width="124" height="44" rx="22" fill="#1d1d20" stroke="${BLUE}" stroke-width="1.6"/><text x="382" y="${y+27}" text-anchor="middle" fill="${INK}" font-size="13">${n}</text></g>`);
+  return `<svg viewBox="0 0 480 480">${s}<text class="a" style="--i:12" x="40" y="434" fill="${MUTED}" font-size="13">Real-time flows, alongside blockchain events</text></svg>`},
+/* 3 — Secure access: right users, right functions */ ()=>{
+  const R=[['Admin',130],['Operator',227],['Viewer',324]],F=[['Settings',130],['Controls',227],['Reports',324]];
+  let s=`<rect class="a" style="--i:0" x="22" y="96" width="436" height="302" rx="18" fill="none" stroke="${BLUE}" stroke-opacity=".35" stroke-dasharray="4 8" stroke-width="1.6"/>
+  <text class="a" style="--i:0" x="40" y="122" fill="${MUTED}" font-size="12">Tenant</text>`;
+  R.forEach(([n,y],i)=>{
+    const d=`M146 ${y+19} C200 ${y+19} 200 ${F[i][1]===y?y+19:246} 240 246 C280 246 280 ${F[i][1]+19} 334 ${F[i][1]+19}`;
+    s+=`<path class="dr" style="--i:${i+3}" pathLength="1" d="${d}" stroke="${GOLD}" stroke-opacity=".75" stroke-width="1.8" fill="none"/>
+    <circle r="4" fill="${GOLD}"><animateMotion dur="3s" begin="${i*.8}s" repeatCount="indefinite" path="${d}"/></circle>
+    <g class="a" style="--i:${i+1}"><rect x="36" y="${y}" width="110" height="38" rx="19" fill="#1d1d20" stroke="${BLUE}" stroke-width="1.6"/><text x="91" y="${y+24}" text-anchor="middle" fill="${INK}" font-size="13">${R[i][0]}</text></g>
+    <g class="a" style="--i:${i+7}"><rect x="334" y="${F[i][1]}" width="110" height="38" rx="19" fill="#1d1d20" stroke="${BLUE}" stroke-width="1.6"/><text x="389" y="${F[i][1]+24}" text-anchor="middle" fill="${INK}" font-size="13">${F[i][0]}</text></g>`});
+  s+=`<g class="pop" style="--i:5"><path d="M240 202 L278 216 V254 C278 280 260 296 240 306 C220 296 202 280 202 254 V216 Z" fill="${PANEL}" stroke="${GOLD}" stroke-width="3" stroke-linejoin="round"/><path d="M222 252l14 14 25-29" fill="none" stroke="${GOLD}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g>`;
+  return `<svg viewBox="0 0 480 480">${s}<text class="a" style="--i:12" x="40" y="434" fill="${MUTED}" font-size="13">Role-based access, multi-tenant by design</text></svg>`},
+/* 4 — Cloud-native: application, deployment, operations */ ()=>{
+  const L=[['Application',9,3],['Deployment',7,2],['Operations',5,2]];
+  let s='';
+  L.forEach(([n,c,extra],li)=>{const y=70+li*118;
+    s+=`<g class="a" style="--i:${li*3}"><rect x="40" y="${y}" width="400" height="92" rx="12" fill="#1d1d20" stroke="${BLUE}" stroke-opacity=".55" stroke-width="1.6"/><text x="60" y="${y+30}" fill="${INK}" font-size="15">${n}</text></g>`;
+    for(let k=0;k<c;k++){const sc=k>=c-extra;
+      s+=`<g class="pop" style="--i:${li*3+k*.5+1}"><rect ${sc?`stroke="${GOLD}" stroke-dasharray="3 4" fill="${GOLD}" fill-opacity=".14"`:`class="srv" style="animation-delay:-${(rnd(li*9+k)*3).toFixed(1)}s" fill="${BLUE}" fill-opacity=".8"`} x="${60+k*38}" y="${y+46}" width="30" height="30" rx="5" stroke-width="1.6"/></g>`}
+  });
+  [[70+92,70+118],[70+118+92,70+236]].forEach(([a,b],i)=>s+=`<path class="dr" style="--i:${9+i}" pathLength="1" d="M240 ${a} V${b}" stroke="${GOLD}" stroke-width="2" fill="none"/><g class="pop" style="--i:${11+i}"><circle cx="240" cy="${(a+b)/2}" r="5.5" fill="${GOLD}"/></g>`);
+  return `<svg viewBox="0 0 480 480">${s}<text class="a" style="--i:14" x="40" y="434" fill="${MUTED}" font-size="13">Scales independently across every layer</text></svg>`}
+];
+const BTAGS=['Domain','Events','Access','Cloud'];
+const bVis=$('#buildVis'); const bScenes=BLD.map((f,i)=>{const d=document.createElement('div');d.className='sc'+(i?'':' on');d.innerHTML=f();bVis.appendChild(d);return d});
+const bTag=document.createElement('div');bTag.className='vis-tag';bTag.textContent=BTAGS[0];bVis.appendChild(bTag);
+
+/* =====================================================
+   SCENES — "Digital platforms" panels
+   ===================================================== */
+const PV=[
+/* mining sites */ ()=>{
+  let s='';
+  for(let si=0;si<3;si++){const x0=26+si*184;
+    s+=`<path class="dr" style="--i:${si}" pathLength="1" d="M282,62 L${x0+72},120" stroke="${BLUE}" stroke-opacity=".6" stroke-width="1.6" fill="none"/>`;
+    s+=`<text class="a" style="--i:${si+2}" x="${x0}" y="114" fill="${MUTED}" font-size="12">Site ${'ABC'[si]}</text>`;
+    for(let r=0;r<3;r++)for(let c=0;c<4;c++){const i=si*12+r*4+c,alert=(si==1&&r==1&&c==2)||(si==2&&r==0&&c==0);
+      s+=`<g class="a" style="--i:${3+(r*4+c)/2+si}"><rect class="${alert?'alert':'led'}" style="animation-delay:-${(rnd(i)*3).toFixed(2)}s" x="${x0+c*36}" y="${128+r*32}" width="30" height="24" rx="3"/></g>`}
+  }
+  return `<svg viewBox="0 0 560 300">${s}<g class="pop" style="--i:0"><circle cx="282" cy="46" r="15" fill="${GOLD}"/><circle class="halo" cx="282" cy="46" r="15" fill="none" stroke="${GOLD}"/></g>
+  <text class="a" style="--i:12" x="26" y="262" fill="${MUTED}" font-size="12">Single site or distributed network</text></svg>`},
+/* tokenization */ ()=>{
+  let t='';
+  for(let r=0;r<4;r++)for(let c=0;c<4;c++){const i=r*4+c,v=rnd(i+3);
+    t+=`<g class="a" style="--i:${(c+r)}"><rect class="tile ${v<.5?'own':v<.72?'own2':''}" style="--j:${i}" x="${36+c*54}" y="${34+r*54}" width="48" height="48"/></g>`}
+  const coins=[['Energy',390,78],['Real estate',490,78],['Equipment',390,190],['Investments',490,190]];
+  let cs='';coins.forEach(([n,x,y],i)=>cs+=`<g class="pop" style="--i:${6+i}"><circle cx="${x}" cy="${y}" r="30" fill="${PANEL}" stroke="${GOLD}" stroke-width="2"/><path d="M${x} ${y-30}A30 30 0 0 1 ${x+30} ${y}L${x} ${y}Z" fill="${GOLD}" fill-opacity="${.9-i*.15}"/></g><text class="a" style="--i:${8+i}" x="${x}" y="${y+52}" text-anchor="middle" fill="${MUTED}" font-size="11.5">${n}</text>`);
+  return `<svg viewBox="0 0 560 300"><style>.tile{fill:${TILE};transition:fill .9s calc(.6s + var(--j)*80ms)}.on .tile.own{fill:${GOLD}}.on .tile.own2{fill:${BLUE}}</style>${t}
+  <path class="dr" style="--i:5" pathLength="1" d="M262 138 H334" stroke="${GOLD}" stroke-width="2" fill="none"/><path class="dr" style="--i:6" pathLength="1" d="M324 128 L336 138 L324 148" stroke="${GOLD}" stroke-width="2" fill="none"/>
+  ${cs}</svg>`},
+/* energy trading */ ()=>{
+  const cx=140,cy=150,R=88,H=[];for(let k=0;k<5;k++){const a=(k*72-90)*Math.PI/180;H.push([cx+R*Math.cos(a),cy+R*Math.sin(a)].map(v=>+v.toFixed(1)))}
+  let s='';
+  for(let k=0;k<5;k++){const a=H[k],b=H[(k+1)%5];
+    s+=`<path class="dr" style="--i:${k}" pathLength="1" d="M${a} L${b}" stroke="${BLUE}" stroke-opacity=".6" stroke-width="1.6" fill="none"/>`;
+    s+=`<path class="dr" style="--i:${k+5}" pathLength="1" d="M${a} L${cx},${cy}" stroke="${BLUE}" stroke-opacity=".25" stroke-width="1.2" fill="none"/>`;
+    s+=`<circle r="3.5" fill="${GOLD}"><animateMotion dur="${(2.6+k*.3).toFixed(1)}s" begin="${(k*.5).toFixed(1)}s" repeatCount="indefinite" path="M${k%2?b:a} L${k%2?a:b}"/></circle>`}
+  H.forEach((p,k)=>s+=`<g class="pop" style="--i:${k+3}"><g transform="translate(${p[0]} ${p[1]})"><path d="M-14 6V-6L0 -18L14 -6V6Z" fill="${PANEL}" stroke="${BLUE}" stroke-width="2" stroke-linejoin="round"/></g></g>`);
+  const pts=[[330,210],[352,190],[374,200],[396,160],[418,172],[440,120],[462,138],[484,92],[506,106]];
+  const d='M'+pts.map(p=>p.join(',')).join(' L');
+  return `<svg viewBox="0 0 560 300">${s}<g class="pop" style="--i:2"><circle cx="${cx}" cy="${cy}" r="13" fill="${GOLD}"/><circle class="halo" cx="${cx}" cy="${cy}" r="13" fill="none" stroke="${GOLD}"/></g>
+  <text class="a" style="--i:10" x="${cx}" y="272" text-anchor="middle" fill="${MUTED}" font-size="12">Microgrid · peer-to-peer</text>
+  <text class="a" style="--i:10" x="330" y="64" fill="${MUTED}" font-size="12">Dynamic pricing</text>
+  <path class="dr" style="--i:8" pathLength="1" d="${d}" fill="none" stroke="${GOLD}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+  <circle r="5" fill="${GOLD}"><animateMotion dur="5s" repeatCount="indefinite" path="${d}"/></circle>
+  <path d="M330 232H510" stroke="#3b3e45" stroke-width="1.5"/></svg>`},
+/* mobile */ ()=>`<svg viewBox="0 0 560 300">
+  <g class="a" style="--i:0"><rect x="206" y="14" width="148" height="272" rx="26" fill="#1d1d20" stroke="${INK}" stroke-opacity=".7" stroke-width="2"/><rect x="262" y="24" width="36" height="6" rx="3" fill="#3b3e45"/></g>
+  <g class="a" style="--i:3"><rect x="220" y="48" width="120" height="56" rx="6" fill="${GOLD}"/><circle cx="238" cy="68" r="6" fill="#1d1d20"/><rect x="252" y="62" width="70" height="7" rx="3.5" fill="#1d1d20"/><rect x="252" y="78" width="46" height="6" rx="3" fill="#1d1d20" fill-opacity=".6"/></g>
+  <g class="a" style="--i:5"><rect x="220" y="114" width="120" height="56" rx="6" fill="${PANEL}" stroke="${BLUE}" stroke-opacity=".5"/><circle cx="238" cy="134" r="6" fill="${BLUE}"/><rect x="252" y="128" width="64" height="7" rx="3.5" fill="${INK}" fill-opacity=".8"/><rect x="252" y="144" width="42" height="6" rx="3" fill="#5b6068"/></g>
+  <g class="a" style="--i:7"><rect x="220" y="180" width="120" height="56" rx="6" fill="${PANEL}" stroke="${BLUE}" stroke-opacity=".5"/><circle cx="238" cy="200" r="6" fill="${BLUE}"/><rect x="252" y="194" width="58" height="7" rx="3.5" fill="${INK}" fill-opacity=".8"/><rect x="252" y="210" width="38" height="6" rx="3" fill="#5b6068"/></g>
+  <g class="a" style="--i:2"><circle cx="280" cy="256" r="10" fill="none" stroke="#3b3e45" stroke-width="2"/></g>
+  <g class="a float" style="--i:9"><rect x="40" y="70" width="124" height="34" rx="17" fill="#1d1d20" stroke="${GOLD}"/><text x="102" y="91.5" text-anchor="middle" fill="${INK}" font-size="12">Incident alerts</text></g>
+  <g class="a float" style="--i:10;animation-delay:-1.4s"><rect x="40" y="150" width="124" height="34" rx="17" fill="#1d1d20" stroke="${BLUE}"/><text x="102" y="171.5" text-anchor="middle" fill="${INK}" font-size="12">Energy usage</text></g>
+  <g class="a float" style="--i:11;animation-delay:-2.6s"><rect x="396" y="110" width="124" height="34" rx="17" fill="#1d1d20" stroke="${BLUE}"/><text x="458" y="131.5" text-anchor="middle" fill="${INK}" font-size="12">Grid &amp; pricing</text></g>
+  <g class="a float" style="--i:12;animation-delay:-.8s"><rect x="396" y="190" width="124" height="34" rx="17" fill="#1d1d20" stroke="${BLUE}"/><text x="458" y="211.5" text-anchor="middle" fill="${INK}" font-size="12">Onboarding</text></g>
+  <path class="dr" style="--i:6" pathLength="1" d="M164 87 H206" stroke="${GOLD}" stroke-width="1.6" fill="none"/><path class="dr" style="--i:7" pathLength="1" d="M164 167 H206" stroke="${BLUE}" stroke-width="1.6" fill="none"/>
+  <path class="dr" style="--i:8" pathLength="1" d="M354 127 H396" stroke="${BLUE}" stroke-width="1.6" fill="none"/><path class="dr" style="--i:9" pathLength="1" d="M354 207 H396" stroke="${BLUE}" stroke-width="1.6" fill="none"/>
+  </svg>`
+];
+PV.forEach((f,i)=>{$('#pv'+i).innerHTML=f()});
+// "on" class lives on the panel so scene css (.on .a) applies
+$$('.pp').forEach(p=>p.addEventListener('x',()=>{}));
+
+/* =====================================================
+   STATE (works with or without GSAP)
+   ===================================================== */
+const items=$$('.wwd-item'), steps=$$('.step');
+let wi=0,bi=0;
+function setWWD(i){ if(i===wi)return; wi=i;
+  items.forEach((b,k)=>{b.classList.toggle('on',k===i);k===i?b.setAttribute('aria-current','true'):b.removeAttribute('aria-current')});
+  scenes.forEach((s,k)=>s.classList.toggle('on',k===i));
+  tag.textContent=TAGS[i];
+  const rail=$('.wwd-rail i'); if(rail)rail.style.transform=`scaleY(${(i+1)/items.length})`;
+}
+function setBuild(i){ if(i===bi)return; bi=i;
+  steps.forEach((b,k)=>{b.classList.toggle('on',k===i);k===i?b.setAttribute('aria-current','true'):b.removeAttribute('aria-current')});
+  bScenes.forEach((s,k)=>s.classList.toggle('on',k===i));
+  bTag.textContent=BTAGS[i];
+}
+{const rail=$('.wwd-rail i'); if(rail)rail.style.transform=`scaleY(${1/items.length})`}
+// mobile / fallback: panels get "on" when they scroll into view
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');}}),{threshold:.35});
+function observePanels(){ $$('.pp').forEach(p=>io.observe(p)) }
+
+/* mobile menu */
+const menu=$('.menu'), nav=$('#nav');
+menu.addEventListener('click',()=>{const o=nav.classList.toggle('open');menu.setAttribute('aria-expanded',o);menu.textContent=o?'Close':'Menu';document.documentElement.style.overflow=o?'hidden':''});
+nav.addEventListener('click',e=>{if(e.target.closest('a')&&nav.classList.contains('open')){nav.classList.remove('open');menu.setAttribute('aria-expanded','false');menu.textContent='Menu';document.documentElement.style.overflow=''}});
+
+/* =====================================================
+   MOTION
+   ===================================================== */
+if(!window.gsap||!window.ScrollTrigger){ root.classList.remove('js'); observePanels(); return; }
+gsap.registerPlugin(ScrollTrigger);
+if(reduce){ root.classList.add('reduce'); }
+
+/* smooth scroll */
+let lenis=null;
+if(!reduce && window.Lenis){
+  lenis=new Lenis({lerp:.09,wheelMultiplier:1,smoothWheel:true});
+  lenis.on('scroll',ScrollTrigger.update);
+  gsap.ticker.add(t=>lenis.raf(t*1000)); gsap.ticker.lagSmoothing(0);
+}
+const scrollTo=(y,o={})=>lenis?lenis.scrollTo(y,{duration:1.6,easing:t=>1-Math.pow(1-t,4),...o}):window.scrollTo({top:typeof y==='number'?y:y.getBoundingClientRect().top+scrollY-95,behavior:reduce?'auto':'smooth'});
+$$('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{
+  const id=a.getAttribute('href'); if(id.length<2){ if(id==='#top'){e.preventDefault();scrollTo(0)} return }
+  const t=$(id); if(!t) return; e.preventDefault(); lenis?lenis.scrollTo(t,{offset:-70,duration:1.8,easing:t=>1-Math.pow(1-t,4)}):scrollTo(t);
+}));
+
+/* scroll progress + header behaviour */
+const header=$('header'), prog=$('.progress');
+ScrollTrigger.create({start:0,end:'max',onUpdate:s=>{
+  gsap.set(prog,{scaleX:s.progress});
+  const y=s.scroll(); header.classList.toggle('scrolled',y>40);
+  header.classList.toggle('hide',s.direction===1&&y>500&&!nav.classList.contains('open'));
+}});
+
+/* word-mask split */
+function split(el){
+  const label=el.textContent.replace(/\s+/g,' ').trim(); el.setAttribute('aria-label',label);
+  const walk=(node,frag)=>node.childNodes.forEach(n=>{
+    if(n.nodeType===3){ n.textContent.split(/(\s+)/).forEach(t=>{ if(!t)return; if(/^\s+$/.test(t)){frag.append(' ');return}
+      const w=document.createElement('span');w.className='w';w.setAttribute('aria-hidden','true');const i=document.createElement('span');i.className='wi';i.textContent=t;w.append(i);frag.append(w)})}
+    else if(n.nodeName==='BR'){frag.append(n.cloneNode())}
+    else{const c=n.cloneNode(false);walk(n,c);frag.append(c)}
+  });
+  const f=document.createDocumentFragment();walk(el,f);el.textContent='';el.append(f);return $$('.wi',el);
+}
+function splitFill(el){
+  const label=el.textContent.trim();el.setAttribute('aria-label',label);
+  el.innerHTML=label.split(/\s+/).map(w=>`<span class="fw" aria-hidden="true">${w}</span>`).join(' ');return $$('.fw',el);
+}
+
+const heroWords=[];
+if(!reduce){
+  $$('[data-split]').forEach(h=>{
+    const w=split(h); h.style.visibility='visible'; gsap.set(w,{yPercent:118});
+    if(h.dataset.split==='hero'){heroWords.push(...w);return}
+    ScrollTrigger.create({trigger:h,start:'top 88%',once:true,onEnter:()=>gsap.to(w,{yPercent:0,duration:1.3,ease:'expo.out',stagger:.07})});
+  });
+  $$('[data-fill]').forEach(p=>{const w=splitFill(p);
+    gsap.fromTo(w,{opacity:.16},{opacity:1,ease:'none',stagger:.12,scrollTrigger:{trigger:p,start:'top 82%',end:'bottom 52%',scrub:true}})});
+
+  /* staggered batch reveals */
+  gsap.set('[data-r]',{y:34});
+  ScrollTrigger.batch('[data-r]',{start:'top 92%',once:true,interval:.1,batchMax:6,
+    onEnter:b=>gsap.to(b,{opacity:1,y:0,duration:1.2,ease:'expo.out',stagger:.09,overwrite:true})});
+
+  /* image reveals + parallax */
+  $$('.img-reveal').forEach(w=>{
+    const inn=$('.ir-in',w),img=$('img',w);
+    gsap.set(inn,{scale:1.35});
+    ScrollTrigger.create({trigger:w,start:'top 82%',once:true,onEnter:()=>{
+      gsap.to(w,{clipPath:'inset(0 0 0% 0)',duration:1.5,ease:'expo.inOut'});
+      gsap.to(inn,{scale:1,duration:2,ease:'expo.out'});
+    }});
+    gsap.fromTo(img,{yPercent:-5},{yPercent:5,ease:'none',scrollTrigger:{trigger:w,start:'top bottom',end:'bottom top',scrub:true}});
+  });
+
+  /* magnetic buttons */
+  if(matchMedia('(hover:hover) and (pointer:fine)').matches){
+    $$('.mag').forEach(b=>{
+      const xt=gsap.quickTo(b,'x',{duration:.6,ease:'power3'}),yt=gsap.quickTo(b,'y',{duration:.6,ease:'power3'});
+      b.addEventListener('pointermove',e=>{const r=b.getBoundingClientRect();xt((e.clientX-r.left-r.width/2)*.28);yt((e.clientY-r.top-r.height/2)*.4)});
+      b.addEventListener('pointerleave',()=>{xt(0);yt(0)});
+    });
+  }
+
+  /* hero parallax */
+  gsap.to('.hero-img',{yPercent:14,scale:1.08,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+  gsap.to('.hero-content',{y:-80,opacity:.0,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'70% top',scrub:true}});
+
+  /* team list + footer wordmark */
+  gsap.set('#giant',{yPercent:18,opacity:0});
+  ScrollTrigger.create({trigger:'#giant',start:'top 96%',once:true,onEnter:()=>gsap.to('#giant',{yPercent:0,opacity:1,duration:1.6,ease:'expo.out'})});
+  $('#giant').removeAttribute('aria-hidden');$('#giant').setAttribute('aria-hidden','true');
+
+}
+
+/* footer wordmark: fit ink edge-to-edge, any viewport */
+function fitGiant(){
+  const g=document.getElementById('giant'); if(!g)return;
+  const foot=g.parentElement, W=foot.clientWidth, pl=parseFloat(getComputedStyle(foot).paddingLeft)||0;
+  const R=200, SW=.035, LS=-.03;
+  g.style.fontSize=R+'px'; g.style.marginLeft='0px';
+  const dom=g.getBoundingClientRect().width;
+  const c=document.createElement('canvas').getContext('2d');
+  const fw=getComputedStyle(g).fontWeight; c.font=fw+' '+R+'px Geist, Arial, sans-serif';
+  const a=c.measureText('D'), b=c.measureText('9');
+  const lbear=-a.actualBoundingBoxLeft, rbear=b.width-b.actualBoundingBoxRight;
+  const ink=dom-LS*R-rbear-lbear;
+  const f=W/(ink/R+SW);
+  g.style.fontSize=f+'px';
+  g.style.marginLeft=(-pl-(lbear/R)*f-(SW/2)*f)+'px';
+}
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitGiant);
+addEventListener('load',fitGiant);addEventListener('resize',fitGiant);fitGiant();
+
+/* =====================================================
+   LOADER → HERO ENTRANCE
+   ===================================================== */
+const loader=$('.loader');
+function heroIn(){
+  header.classList.add('ready');
+  if(reduce){root.classList.add('reduce');$$('.hero [data-h]').forEach(e=>e.style.opacity=1);return}
+  const tl=gsap.timeline({defaults:{ease:'expo.out'}});
+  tl.fromTo('.hero-img',{scale:1.25},{scale:1,duration:2.4},0)
+    .to(heroWords,{yPercent:0,duration:1.4,stagger:.08},0.05)
+    .fromTo('.hero [data-h]',{y:26,opacity:0},{y:0,opacity:1,duration:1.2,stagger:.12},0.35)
+    .fromTo('.strip div',{y:30,opacity:0},{y:0,opacity:1,duration:1.1,stagger:.1,overwrite:true},0.8);
+}
+if(reduce){ loader&&loader.remove(); heroIn(); }
+else{
+  gsap.set('.strip div',{opacity:0}); // revealed by hero timeline
+  const lt=gsap.timeline({onComplete:()=>{loader.remove();ScrollTrigger.refresh()}});
+  lt.to('.ld-logo',{opacity:1,y:0,duration:.7,ease:'expo.out'})
+    .to('.ld-bar',{scaleX:1,duration:.9,ease:'power3.inOut'},0)
+    .to('.loader',{yPercent:-100,duration:1,ease:'expo.inOut'},'+=.1')
+    .add(heroIn,'-=.55');
+  setTimeout(()=>{if(document.body.contains(loader)){loader.remove();heroIn()}},6000);
+}
+
+/* =====================================================
+   WHAT WE DO — sticky scrollytelling
+   ===================================================== */
+const wTrack=$('#wwdTrack');
+const wST=ScrollTrigger.create({trigger:wTrack,start:'top top',end:'bottom bottom',onUpdate:s=>setWWD(Math.min(items.length-1,Math.floor(s.progress*items.length)))});
+items.forEach((b,i)=>b.addEventListener('click',()=>{
+  const y=wST.start+(wST.end-wST.start)*(i+.5)/items.length; scrollTo(y);
+}));
+
+/* =====================================================
+   DIGITAL PLATFORMS — horizontal pinned scroll
+   ===================================================== */
+const mm=gsap.matchMedia();
+mm.add('(min-width: 901px) and (prefers-reduced-motion: no-preference)',()=>{
+  const track=$('#platTrack'),pin=$('#platPin'),panels=$$('.pp'),bar=$('#platBar');
+  const dist=()=>Math.max(0,track.scrollWidth-innerWidth);
+  const tween=gsap.to(track,{x:()=>-dist(),ease:'none',scrollTrigger:{trigger:pin,start:'top top',end:()=>'+='+dist(),pin:true,scrub:.7,anticipatePin:1,invalidateOnRefresh:true,
+    onUpdate:s=>{gsap.set(bar,{scaleX:s.progress})}}});
+  panels.forEach(p=>{
+    ScrollTrigger.create({trigger:p,containerAnimation:tween,start:'left 82%',onEnter:()=>p.classList.add('on')});
+    gsap.fromTo($('.pp-vis svg',p),{x:70},{x:-70,ease:'none',scrollTrigger:{trigger:p,containerAnimation:tween,start:'left right',end:'right left',scrub:true}});
+    gsap.fromTo($('.pp-txt',p),{y:40},{y:0,ease:'none',scrollTrigger:{trigger:p,containerAnimation:tween,start:'left 95%',end:'left 55%',scrub:true}});
+  });
+  return()=>{panels.forEach(p=>p.classList.remove('on'))};
+});
+mm.add('(max-width: 900px), (prefers-reduced-motion: reduce)',()=>{observePanels()});
+
+/* =====================================================
+   HOW WE BUILD — isometric stack builds with scroll
+   ===================================================== */
+const bTrack=$('#buildTrack');
+const bST=ScrollTrigger.create({trigger:bTrack,start:'top top',end:'bottom bottom',onUpdate:s=>setBuild(Math.min(steps.length-1,Math.floor(s.progress*steps.length)))});
+steps.forEach((b,i)=>b.addEventListener('click',()=>{scrollTo(bST.start+(bST.end-bST.start)*(i+.5)/steps.length)}));
+
+window.addEventListener('load',()=>ScrollTrigger.refresh());
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>ScrollTrigger.refresh());
+})();
+</script>
+</body>
+</html>
